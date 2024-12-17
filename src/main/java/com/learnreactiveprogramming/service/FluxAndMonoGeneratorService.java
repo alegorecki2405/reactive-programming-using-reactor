@@ -24,6 +24,14 @@ public class FluxAndMonoGeneratorService {
                 .log();
     }
 
+    public Mono<List<String>> namesMono_flatMap(int stringLength) {
+        return Mono.just("alex")
+                .map(String::toUpperCase)
+                .filter(s->s.length()>stringLength)
+                .flatMap(this::splitStringMono);
+    }
+
+
 
     public Flux<String> namesFlux_map(int stringLength) {
         //filter the string whose length is greater than var
@@ -61,14 +69,31 @@ public class FluxAndMonoGeneratorService {
                 .log();
     }
 
+    public Flux<String> namesFlux_concatMap(int stringLength) {
+        //filter the string whose length is greater than var
+        return Flux.fromIterable(List.of("alex", "ben", "chloe"))
+                .map(String::toUpperCase)
+//                .map(s->s.toUpperCase())
+                .filter(s -> s.length() > stringLength)
+                .concatMap(s->splitString_withDelay(s))
+                .log();
+    }
+
     public Flux<String> splitString(String name) {
         var charArray = name.split("");
         return Flux.fromArray(charArray);
     }
 
+    public Mono<List<String>> splitStringMono(String name) {
+        var charArray = name.split("");
+        var charList = List.of(charArray); //ALEX -> A, L, E, X
+        return Mono.just(charList);
+    }
+
     public Flux<String> splitString_withDelay(String name) {
         var charArray = name.split("");
-        var delay = new Random().nextInt(1000);
+//        var delay = new Random().nextInt(1000);
+        var delay = 1000;
         return Flux.fromArray(charArray).delayElements(Duration.ofMillis(delay));
     }
 
