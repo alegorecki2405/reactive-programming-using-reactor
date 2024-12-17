@@ -31,6 +31,13 @@ public class FluxAndMonoGeneratorService {
                 .flatMap(this::splitStringMono);
     }
 
+    public Flux<String> namesMono_flatMapMany(int stringLength) {
+        return Mono.just("alex")
+                .map(String::toUpperCase)
+                .filter(s->s.length()>stringLength)
+                .flatMapMany(this::splitString)
+                .log();
+    }
 
 
     public Flux<String> namesFlux_map(int stringLength) {
