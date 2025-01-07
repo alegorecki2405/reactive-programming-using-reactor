@@ -6,6 +6,7 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Function;
 
 public class FluxAndMonoGeneratorService {
 
@@ -21,6 +22,25 @@ public class FluxAndMonoGeneratorService {
         return Mono.just("alex")
                 .filter(s->s.length()>stringLength)
                 .map(String::toUpperCase)
+                .log();
+    }
+
+    public Mono<String> namesMono_defaultIfEmpty(int stringLength) {
+        return Mono.just("alex")
+                .filter(s->s.length()>stringLength)
+                .map(String::toUpperCase)
+                .defaultIfEmpty("default")
+                .log();
+    }
+
+    public Mono<String> namesMono_switchIfEmpty(int stringLength) {
+
+        var defaultMono = Mono.just("default");
+
+        return Mono.just("alex")
+                .filter(s->s.length()>stringLength)
+                .map(String::toUpperCase)
+                .switchIfEmpty(defaultMono)
                 .log();
     }
 
@@ -83,6 +103,36 @@ public class FluxAndMonoGeneratorService {
 //                .map(s->s.toUpperCase())
                 .filter(s -> s.length() > stringLength)
                 .concatMap(s->splitString_withDelay(s))
+                .log();
+    }
+
+    public Flux<String> namesFlux_transform(int stringLength) {
+
+        Function<Flux<String>,Flux<String>> filtermap = name -> name.map(String::toUpperCase)
+                .filter(s -> s.length() > stringLength);
+
+//        Flux.empty()
+        //filter the string whose length is greater than var
+        return Flux.fromIterable(List.of("alex", "ben", "chloe"))
+                .transform(filtermap)
+                .flatMap(s -> splitString(s))
+                .defaultIfEmpty("default")
+                .log();
+    }
+
+    public Flux<String> namesFlux_transform_switchIfEmpty(int stringLength) {
+
+        Function<Flux<String>,Flux<String>> filtermap = name -> name.map(String::toUpperCase)
+                .filter(s -> s.length() > stringLength)
+                .flatMap(s -> splitString(s));
+
+        var defaultFlux = Flux.just("default").transform(filtermap);
+
+//        Flux.empty()
+        //filter the string whose length is greater than var
+        return Flux.fromIterable(List.of("alex", "ben", "chloe"))
+                .transform(filtermap)
+                .switchIfEmpty(defaultFlux)
                 .log();
     }
 

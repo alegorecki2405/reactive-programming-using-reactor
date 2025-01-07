@@ -119,4 +119,68 @@ public class FluxAndMonoGeneratorServiceTest {
                 .expectNext("A","L","E","X")
                 .verifyComplete();
     }
+
+    @Test
+    void namesFlux_transform() {
+        int stringLength = 3;
+        var namesFlux = fluxAndMonoGeneratorService.namesFlux_transform(stringLength);
+
+        StepVerifier
+                .create(namesFlux)
+                .expectNext("A","L","E","X","C","H","L","O","E")
+                .verifyComplete();
+    }
+
+    @Test
+    void namesFlux_transform_1() {
+        int stringLength = 6;
+        var namesFlux = fluxAndMonoGeneratorService.namesFlux_transform(stringLength);
+
+        StepVerifier
+                .create(namesFlux)
+//                .expectNext("A","L","E","X","C","H","L","O","E")
+                .expectNext("default")
+                .verifyComplete();
+    }
+
+    @Test
+    void namesFlux_transform_switchIfEmpty() {
+        int stringLength = 6;
+        var namesFlux = fluxAndMonoGeneratorService.namesFlux_transform_switchIfEmpty(stringLength);
+
+        StepVerifier
+                .create(namesFlux)
+//                .expectNext("A","L","E","X","C","H","L","O","E")
+                .expectNext("D","E","F","A","U","L","T")
+                .verifyComplete();
+    }
+
+
+    @Test
+    void namesMono_defaultIfEmpty(){
+
+        int stringLength = 4;
+
+        var namesMono = fluxAndMonoGeneratorService.namesMono_defaultIfEmpty(stringLength);
+
+        StepVerifier
+                .create(namesMono)
+//                .expectNext("ALEX")
+                .expectNext("default")
+                .verifyComplete();
+    }
+
+    @Test
+    void namesMono_switchIfEmpty(){
+
+        int stringLength = 4;
+
+        var namesMono = fluxAndMonoGeneratorService.namesMono_switchIfEmpty(stringLength);
+
+        StepVerifier
+                .create(namesMono)
+//                .expectNext("ALEX")
+                .expectNext("default")
+                .verifyComplete();
+    }
 }
