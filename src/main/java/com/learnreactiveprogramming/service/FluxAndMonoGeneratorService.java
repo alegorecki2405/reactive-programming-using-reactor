@@ -136,6 +136,20 @@ public class FluxAndMonoGeneratorService {
                 .log();
     }
 
+    public Flux<String> explore_concat() {
+        var abcFlux = Flux.just("A","B","C");
+        var defFlux = Flux.just("D","E","F");
+
+        return Flux.concat(abcFlux,defFlux).log();
+    }
+
+    public Flux<String> explore_concatwith() {
+        var aMono = Mono.just("A");
+        var bMono = Flux.just("B");
+
+        return aMono.concatWith(bMono).log();
+    }
+
     public Flux<String> splitString(String name) {
         var charArray = name.split("");
         return Flux.fromArray(charArray);
