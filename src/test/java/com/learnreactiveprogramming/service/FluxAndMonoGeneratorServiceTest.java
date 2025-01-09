@@ -185,12 +185,52 @@ public class FluxAndMonoGeneratorServiceTest {
     }
 
     @Test
-    void explore_concat() {
-        var concatFlux = fluxAndMonoGeneratorService.explore_concat();
+    void explore_concatwith() {
+        var concatFlux = fluxAndMonoGeneratorService.explore_concatwith();
 
         StepVerifier
                 .create(concatFlux)
                 .expectNext("A","B","C","D","E","F")
+                .verifyComplete();
+    }
+
+    @Test
+    void explore_concatwith_mono() {
+        var concatFlux = fluxAndMonoGeneratorService.explore_concatwith_mono();
+
+        StepVerifier
+                .create(concatFlux)
+                .expectNext("A","B")
+                .verifyComplete();
+    }
+
+    @Test
+    void explore_merge() {
+        var value = fluxAndMonoGeneratorService.explore_merge();
+
+        StepVerifier
+                .create(value)
+                .expectNext("A","D","B","E","C","F")
+                .verifyComplete();
+    }
+
+    @Test
+    void explore_mergeWith() {
+        var value = fluxAndMonoGeneratorService.explore_mergeWith();
+
+        StepVerifier
+                .create(value)
+                .expectNext("A","D","B","E","C","F")
+                .verifyComplete();
+    }
+
+    @Test
+    void explore_mergeWith_mono() {
+        var value = fluxAndMonoGeneratorService.explore_mergeWith_mono();
+
+        StepVerifier
+                .create(value)
+                .expectNext("A","B")
                 .verifyComplete();
     }
 }

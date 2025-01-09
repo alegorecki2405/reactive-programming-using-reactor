@@ -5,7 +5,6 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Function;
 
 public class FluxAndMonoGeneratorService {
@@ -136,18 +135,43 @@ public class FluxAndMonoGeneratorService {
                 .log();
     }
 
-    public Flux<String> explore_concat() {
+    public Flux<String> explore_concatwith() {
         var abcFlux = Flux.just("A","B","C");
         var defFlux = Flux.just("D","E","F");
 
         return Flux.concat(abcFlux,defFlux).log();
     }
 
-    public Flux<String> explore_concatwith() {
+    public Flux<String> explore_concatwith_mono() {
         var aMono = Mono.just("A");
         var bMono = Flux.just("B");
 
         return aMono.concatWith(bMono).log();
+    }
+
+    public Flux<String> explore_merge() {
+        var abcFlux = Flux.just("A","B","C")
+                .delayElements(Duration.ofMillis(100));
+        var defFlux = Flux.just("D","E","F")
+                .delayElements(Duration.ofMillis(125));
+
+        return Flux.merge(abcFlux,defFlux).log();
+    }
+
+    public Flux<String> explore_mergeWith() {
+        var abcFlux = Flux.just("A","B","C")
+                .delayElements(Duration.ofMillis(100));
+        var defFlux = Flux.just("D","E","F")
+                .delayElements(Duration.ofMillis(125));
+
+        return abcFlux.mergeWith(defFlux).log();
+    }
+
+    public Flux<String> explore_mergeWith_mono() {
+        var aMono = Mono.just("A");
+        var bMono = Mono.just("B");
+
+        return aMono.mergeWith(bMono).log();
     }
 
     public Flux<String> splitString(String name) {
