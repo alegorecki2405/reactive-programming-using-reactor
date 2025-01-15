@@ -263,4 +263,24 @@ public class FluxAndMonoGeneratorServiceTest {
                 .expectNext("AD14","BE25","CF36")
                 .verifyComplete();
     }
+
+    @Test
+    void explore_zipWith() {
+        var value = fluxAndMonoGeneratorService.explore_zipWith();
+
+        StepVerifier
+                .create(value)
+                .expectNext("AD","BE","CF")
+                .verifyComplete();
+    }
+
+    @Test
+    void explore_zipWith_mono() {
+        var value = fluxAndMonoGeneratorService.explore_zipWith_mono();
+
+        StepVerifier
+                .create(value)
+                .expectNext("AB")
+                .verifyComplete();
+    }
 }
