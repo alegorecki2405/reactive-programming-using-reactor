@@ -58,7 +58,6 @@ public class FluxAndMonoGeneratorService {
                 .log();
     }
 
-
     public Flux<String> namesFlux_map(int stringLength) {
         //filter the string whose length is greater than var
         return Flux.fromIterable(List.of("alex", "ben", "chloe"))
