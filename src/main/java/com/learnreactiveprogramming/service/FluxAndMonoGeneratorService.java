@@ -1,5 +1,6 @@
 package com.learnreactiveprogramming.service;
 
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -7,6 +8,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.function.Function;
 
+@Slf4j
 public class FluxAndMonoGeneratorService {
 
     public Flux<String> namesFlux() {
@@ -233,6 +235,46 @@ public class FluxAndMonoGeneratorService {
     public Flux<String> exception_flux() {
         return Flux.just("A","B","C").concatWith(Flux.error(new RuntimeException("Exception occured")))
                 .concatWith(Flux.just("D"))
+                .log();
+    }
+
+    public Flux<String> explore_OnErrorReturn() {
+        return Flux.just("A","B","C").concatWith(Flux.error(new IllegalStateException("Exception occured")))
+                .onErrorReturn("D")
+                .log();
+    }
+
+    public Flux<String> explore_OnErrorResume(Exception e) {
+
+        var recoveryFlux = Flux.just("D", "E", "F");
+
+        return Flux.just("A", "B", "C").concatWith(Flux.error(e))
+                .onErrorResume(ex -> {
+                    log.error("Exception is ", ex);
+                    if(ex instanceof IllegalStateException) {
+                        return recoveryFlux;
+
+                    } else {
+                        return Flux.error(ex);
+                    }
+                })
+                .log();
+    }
+
+    public Flux<String> explore_OnErrorContinue() {
+
+        return Flux.just("A", "B", "C")
+                .map(name -> {
+                    if (name.equals("B")){
+                        throw new IllegalStateException("Exception Occurred");
+                    }
+                    return name;
+                })
+                .concatWith(Flux.just("D"))
+                .onErrorContinue((ex, name) -> {
+                    log.error("Exception is ", ex);
+                    log.info("name is " + name);
+                })
                 .log();
     }
 
