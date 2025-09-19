@@ -1,5 +1,6 @@
 package com.learnreactiveprogramming.service;
 
+import com.learnreactiveprogramming.exception.ReactorException;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -277,6 +278,62 @@ public class FluxAndMonoGeneratorService {
                 })
                 .log();
     }
+
+    public Flux<String> explore_OnErrorMap() {
+
+        return Flux.just("A", "B", "C")
+                .map(name -> {
+                    if (name.equals("B")){
+                        throw new IllegalStateException("Exception Occurred");
+                    }
+                    return name;
+                })
+                .concatWith(Flux.just("D"))
+                .onErrorMap((ex) -> {
+                    log.error("Exception is ", ex);
+                    return new ReactorException(ex, ex.getMessage());
+                })
+                .log();
+    }
+
+    public Flux<String> explore_doOnError() {
+        return Flux.just("A","B","C").concatWith(Flux.error(new IllegalStateException("Exception occured")))
+                .doOnError(ex ->{
+                    log.error("Exception is ", ex);
+                })
+                .log();
+    }
+
+    public Mono<Object> explore_Mono_onErrorReturn() {
+        return Mono.just("A")
+                .map(value -> {
+                    throw new RuntimeException("Exception occured");
+                })
+                .onErrorReturn("abc")
+                .log();
+    }
+
+    public Mono<Object> exception_mono_onErrorMap(Exception e) {
+        return Mono.just("B").map(value -> {
+            throw new RuntimeException("Exception Occured");
+        }).onErrorMap(ex-> {
+            log.error("Exception Occured");
+            return new ReactorException(ex, ex.getMessage());
+        });
+    }
+
+    public Mono<String> exception_Mono_onErrorContinue(String input) {
+        return Mono.just(input).map(value -> {
+            if (value.equals("abc")) {
+                throw new RuntimeException("Exception Occured");
+            } return value;
+        }).onErrorContinue((ex, value) -> {
+            log.info("Exception is "+ ex);
+            log.info("Value is", value);
+        }).log();
+    }
+
+
 
     public Flux<String> splitString(String name) {
         var charArray = name.split("");
