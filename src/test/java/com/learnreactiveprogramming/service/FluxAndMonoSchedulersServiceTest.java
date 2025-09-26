@@ -22,4 +22,41 @@ class FluxAndMonoSchedulersServiceTest {
 
         StepVerifier.create(flux).expectNextCount(6).verifyComplete();
     }
+
+    @Test
+    void explore_parallel(){
+
+        var flux = fluxAndMonoSchedulersService.explore_parallel();
+
+        StepVerifier.create(flux).expectNextCount(3).verifyComplete();
+    }
+
+    @Test
+    void explore_parallel_usingFlatmap(){
+
+        var flux = fluxAndMonoSchedulersService.explore_parallel_usingFlatmap();
+
+        StepVerifier.create(flux).expectNextCount(3).verifyComplete();
+    }
+
+    @Test
+    void explore_parallel_usingFlatmap_1(){
+
+        var flux = fluxAndMonoSchedulersService.explore_parallel_usingFlatmap_1();
+
+        StepVerifier.create(flux).expectNextCount(6).verifyComplete();
+    }
+
+    @Test
+    void explore_parallel_usingFlatmapsequential(){
+
+        var flux = fluxAndMonoSchedulersService.explore_parallel_usingFlatmapsequential();
+
+        StepVerifier.create(flux)
+                .expectNext("ALEX")
+                .expectNext("BEN")
+                .expectNext("CHLOE")
+                .verifyComplete();
+    }
+
 }
