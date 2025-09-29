@@ -1,6 +1,5 @@
 package com.learnreactiveprogramming.service;
 
-import com.learnreactiveprogramming.domain.Movie;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
 
