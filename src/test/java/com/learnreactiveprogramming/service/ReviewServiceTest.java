@@ -2,19 +2,24 @@ package com.learnreactiveprogramming.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.test.StepVerifier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ReviewServiceTest {
 
     WebClient webClient = WebClient.builder()
-            .baseUrl("http://localhost:8080/reviews")
+            .baseUrl("http://localhost:8080/movies")
             .build();
 
     ReviewService reviewService = new ReviewService(webClient);
 
     @Test
     void retrieveReviewsFlux_RestClient() {
+        var reviewInfoFlux = reviewService.retrieveReviewsFlux_RestClient(1L);
 
+        StepVerifier.create(reviewInfoFlux).assertNext(review -> {
+            assertEquals("Nolan is the real superhero", review.getComment());
+        }).verifyComplete();
     }
 }

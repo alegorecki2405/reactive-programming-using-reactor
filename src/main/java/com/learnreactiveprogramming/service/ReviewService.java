@@ -35,7 +35,9 @@ public class ReviewService {
 
         var uri = UriComponentsBuilder.fromUriString("/v1/reviews")
                 .queryParam("movieInfoId", movieInfoId)
-                .buildAndExpand().toUriString();
+                .buildAndExpand()
+                .toUriString();
+
         return webClient.get().uri(uri)
                 .retrieve()
                 .bodyToFlux(Review.class)
