@@ -403,4 +403,32 @@ public class FluxAndMonoGeneratorServiceTest {
 
         StepVerifier.create(value).expectNext("reactor").verifyComplete();
     }
+
+    @Test
+    void explore_generate() {
+        var flux = fluxAndMonoGeneratorService.explore_generate().log();
+
+        StepVerifier.create(flux).expectNextCount(10).verifyComplete();
+    }
+
+    @Test
+    void explore_create() {
+        var flux = fluxAndMonoGeneratorService.explore_create().log();
+
+        StepVerifier.create(flux).expectNextCount(9).verifyComplete();
+    }
+
+    @Test
+    void explore_create_mono() {
+        var mono = fluxAndMonoGeneratorService.explore_create_mono();
+
+        StepVerifier.create(mono).expectNext("alex").verifyComplete();
+    }
+
+    @Test
+    void explore_handle() {
+        var flux = fluxAndMonoGeneratorService.explore_handle().log();
+
+        StepVerifier.create(flux).expectNextCount(2).verifyComplete();
+    }
 }
